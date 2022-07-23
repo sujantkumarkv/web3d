@@ -22,6 +22,9 @@ import { FileUpload } from "@/components/FileUpload";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { isNumeric } from "@/utils/regex";
 import { FcCheckmark } from "react-icons/fc";
+import { ethers } from "ethers";
+import verifierAbi from './verifierAbi.json'
+
 
 // Initialize the Privy client.
 const provider = typeof window !== "undefined" ? window.ethereum : null;
@@ -32,6 +35,7 @@ const session = new SiweSession(
 const client = new PrivyClient({
   session: session,
 });
+
 
 interface Inputs {
   latitude: string;
@@ -110,6 +114,12 @@ export default function Home() {
         ]),
       ]);
       toast({ title: "Successfully updated information", status: "success" });
+      const provider = new ethers.providers.Web3Provider(window.ethereum)
+      const signer = provider.getSigner()
+
+      console.log(signer)
+
+      const verifierContract = new ethers.Contract('0xd8db09d8f663197a439b164fb63d43ff23dbb158', verifierAbi, provider);
     } catch (err) {
       toast({ title: "Something went wrong", status: "error" });
     }
